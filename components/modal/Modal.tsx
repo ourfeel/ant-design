@@ -35,10 +35,7 @@ const getClickPosition = (e: MouseEvent) => {
   }, 100);
 };
 
-// 只有点击事件支持从鼠标位置动画展开
-if (canUseDocElement()) {
-  document.documentElement.addEventListener('click', getClickPosition, true);
-}
+
 
 const Modal: React.FC<ModalProps> = (props) => {
   const {
@@ -69,6 +66,16 @@ const Modal: React.FC<ModalProps> = (props) => {
       warning.deprecated(!(deprecatedName in props), deprecatedName, newName);
     });
   }
+
+  React.useEffect(() => {
+    // 只有点击事件支持从鼠标位置动画展开
+    if (canUseDocElement()) {
+      document.documentElement.addEventListener('click', getClickPosition, true);
+      return () =>{
+        document.documentElement.removeEventListener('click', getClickPosition, true);
+      }
+    }
+  }, [])
 
   const {
     prefixCls: customizePrefixCls,
